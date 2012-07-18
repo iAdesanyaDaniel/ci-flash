@@ -13,32 +13,32 @@ class Flash {
   /**
    * The current CodeIgniter instance
    *
-   * @var       object
    * @access    private
+   * @var       object
    */
   private $_CI;
 
   /**
    * The messages retrieved from the session
    *
-   * @var       array
    * @access    private
+   * @var       array
    */
   private $_session_messages = array();
 
   /**
    * The messages stored for displaying on this request
    *
-   * @var       array
    * @access    private
+   * @var       array
    */
   private $_messages = array();
 
   /**
    * The permitted config options for alteration
    *
-   * @var       array
    * @access    private
+   * @var       array
    */
   private $_config_whitelist = array(
     'session_name', 'default_style', 'styles', 'split_default', 'merge_form_errors'
@@ -47,40 +47,40 @@ class Flash {
   /**
    * The session name used for flashdata
    *
-   * @var       string
    * @access    public
+   * @var       string
    */
   public $session_name = 'flash';
 
   /**
    * The default styling used if none specified
    *
-   * @var       array
    * @access    public
+   * @var       array
    */
   public $default_style = array('<div>', '</div>');
 
   /**
    * The different styles used for specific message types
    *
-   * @var       array
    * @access    public
+   * @var       array
    */
   public $styles = array();
 
   /**
    * Split the displayed messages by default
    *
-   * @var       bool
    * @access    public
+   * @var       bool
    */
   public $split_default = FALSE;
 
   /**
    * Merge form validation errors with error messages
    *
-   * @var       bool
    * @access    public
+   * @var       bool
    */
   public $merge_form_errors = TRUE;
 
@@ -91,8 +91,8 @@ class Flash {
    * override the config options based on the config file, then
    * passed in options.
    *
-   * @param     array     $config
    * @access    public
+   * @param     array     $config
    */
   public function __construct(array $config = array())
   {
@@ -113,8 +113,8 @@ class Flash {
    * Overrides the whitelisted default config options with the
    * ones passed in as a param.
    *
-   * @param     array      $config
    * @access    private
+   * @param     array      $config
    */
   private function _initialize(array $config = array())
   {
@@ -132,10 +132,10 @@ class Flash {
    * the option to display the message on this request, else it
    * will be stored in flashdata for the next one.
    *
+   * @access    private
    * @param     mixed      $msg     The message to be added
    * @param     string     $type    The type of message being added
    * @param     bool       $now     Display the message on this request or the next
-   * @access    private
    * @return    object     $this
    */
   private function _add_message($msg, $type = 'default', $now = FALSE)
@@ -164,9 +164,9 @@ class Flash {
    * types are returned. If 'form' is passed in as the type the form
    * validation class is used to retrieve the errors.
    *
+   * @access    public
    * @param     string    $type     The message type to display
    * @param     bool      $split    Display messages split or joined
-   * @access    public
    * @return    string    the message HTML
    */
   public function display($type = '', $split = NULL)
@@ -245,14 +245,14 @@ class Flash {
   }
 
   /**
-   * Call Magic Method
+   * Call (Magic Method)
    *
    * Used to allow user to call the class with a message type as the function name.
    * When called it internally invokes the private add message function.
    *
+   * @access    public
    * @param     string    $name         The message type name
    * @param     array     $arguments    The arguments passed into the method
-   * @access    public
    * @return    object    $this
    */
   public function __call($name, $arguments)
