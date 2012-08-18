@@ -34,9 +34,9 @@ $config['flash']['default_style'] = array('<div class="alert">', '</div>');
 */
 
 $config['flash']['styles'] = array(
-  'success' => array('<div class="alert alert-success">', '</div>'),
-  'error'   => array('<div class="alert alert-error">', '</div>'),
-  'form'    => array('<div class="alert alert-error">', '</div>')
+	'success' => array('<div class="alert alert-success">', '</div>'),
+	'error'   => array('<div class="alert alert-error">',   '</div>'),
+	'form'    => array('<div class="alert alert-error">',   '</div>')
 );
 
 
