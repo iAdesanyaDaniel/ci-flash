@@ -124,9 +124,9 @@ class Flash {
 	 */
 	private function _initialize(array $config = array())
 	{
-		foreach ($config as $c_key => $c_value) {
-			if (in_array($c_key, $this->_config_whitelist)) {
-				$this->{$c_key} = $c_value;
+		foreach ($config as $config_key => $config_value) {
+			if (in_array($config_key, $this->_config_whitelist)) {
+				$this->{$config_key} = $config_value;
 			}
 		}
 	}
@@ -188,9 +188,14 @@ class Flash {
 			$this->_ci->load->library('form_validation');
 
 			// check that validation errors function exists and return errors in an array
-			// if not, set to an empty array
-			$form_errors = (function_exists('validation_errors')) ?
-				explode('|', validation_errors('', '|')) : array();
+			// if not, leave array empty
+			$form_errors = array();
+
+			if (function_exists('validation_errors')) {
+				if ($errors = trim(validation_errors(' ', '|'))) {
+					$form_errors = explode('|', substr($errors, 0, -1));
+				}
+			}
 
 			foreach ($form_errors as $error) {
 				// add form message to error messages if merge specified and type valid
