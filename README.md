@@ -29,9 +29,13 @@ To define the type of message, you call the desired name type as the function na
 
     $this->flash->success('Successfully updated the record.');
 
-Or if you wish to display a _info_ message the page request.
+Or if you wish to display a _info_ message this page request with a single printf placeholder.
 
-    $this->flash->info_now('This is some useful information.');
+    $this->flash->info_now('This is some useful %s.', 'information');
+
+Screw it, lets make it a _awesome_ message with multiple placeholders.
+
+    $this->flash->awesome('This is a %s %s', array('awesome', 'message'));
 
 To display all the messages, split into each individual message type (i.e. in a view).
 
