@@ -31,7 +31,7 @@ To define the type of message, you call the desired name type as the function na
 
 Or if you wish to display a _info_ message the page request.
 
-    $this->flash->info('This is some useful information.', TRUE);
+    $this->flash->info_now('This is some useful information.');
 
 To display all the messages, split into each individual message type (i.e. in a view).
 
