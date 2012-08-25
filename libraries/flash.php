@@ -146,12 +146,16 @@ class Flash {
 	 * @return object $this
 	 * @access private
 	 */
-	private function _add_message($message, $type = 'default', $display_now = FALSE)
+	private function _add_message($message, $data = '', $type = 'default', $display_now = FALSE)
 	{
 		// all messages must scalar types (int, float, string or boolean)
 		// and the type must be a string, if either invalid an exception is raised
 		if ( ! is_scalar($message) OR ! is_string($type))
 			throw new Exception('Invalid message type/value entered.');
+
+		// apply formatting based on type
+		$message = (is_array($data)) ?
+			vsprintf($message, $data) : sprintf($message, $data);
 
 		if ($display_now === FALSE) {
 			$this->_session_messages[$type][] = $message;
@@ -274,12 +278,13 @@ class Flash {
 	public function __call($name, $arguments)
 	{
 		if ( ! empty($arguments)) {
-			// set the message and display status
-			$message     = $arguments[0];
-			$display_now = (isset($arguments[1]) AND $arguments[1] === TRUE);
+			// set display status based on function call name and set message
+			$name    = preg_replace('/_now$/', '', $name, 1, $display_now);
+			$message = $arguments[0];
+			$data = (isset($arguments[1])) ? $arguments[1] : '';
 
 			// call the private add message method with provided arguments
-			return $this->_add_message($message, $name, $display_now);
+			return $this->_add_message($message, $data, $name, (bool)$display_now);
 		}
 		// throw a bad method exception if no arguments passed
 		else {
