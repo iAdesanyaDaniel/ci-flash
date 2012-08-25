@@ -44,7 +44,7 @@ class Flash {
 	 * @access private
 	 */
 	private $_config_whitelist = array(
-		'session_name', 'default_style', 'styles', 'split_default', 'merge_form_errors'
+		'storage_type', 'session_name', 'default_style', 'styles', 'split_default', 'merge_form_errors'
 	);
 
 	/**
@@ -102,13 +102,18 @@ class Flash {
 	{
 		$this->_ci =& get_instance();
 
-		$this->_ci->load->library('session');
-
 		if (is_array(config_item('flash')))
 			$config = array_merge(config_item('flash'), $config);
 
 		if ( ! empty($config))
 			$this->_initialize($config);
+
+		if ($this->storage_type === 'cookie') {
+			setcookie($this->session_name, '');
+		}
+		else {
+			$this->_ci->load->library('session');
+		}
 	}
 
 	/**
@@ -159,7 +164,13 @@ class Flash {
 
 		if ($display_now === FALSE) {
 			$this->_session_messages[$type][] = $message;
-			$this->_ci->session->set_flashdata($this->session_name, $this->_session_messages);
+
+			if ($this->storage_type === 'cookie') {
+				setcookie($this->session_name, base64_encode(json_encode($this->_session_messages)));
+			}
+			else {
+				$this->_ci->session->set_flashdata($this->session_name, $this->_session_messages);
+			}
 		}
 		else {
 			$this->_messages[$type][] = $message;
@@ -184,8 +195,17 @@ class Flash {
 	 */
 	public function display($type = '', $split = NULL)
 	{
-		$session_messages = $this->_ci->session->flashdata($this->session_name);
-		$messages         = $this->_messages;
+		if ($this->storage_type === 'cookie') {
+			$session_messages = json_decode(base64_decode($this->_ci->input->cookie($this->session_name)), TRUE);
+		}
+		else {
+			$session_messages = $this->_ci->session->flashdata($this->session_name);
+		}
+		
+		if ( ! is_array($session_messages))
+			$session_messages = array();
+
+		$messages = $this->_messages;
 
 		// attempt to display form errors if no type or form/error types passed in
 		if ($type === '' OR $type === 'form' OR ($this->merge_form_errors AND $type === 'error')) {
@@ -226,7 +246,7 @@ class Flash {
 		}
 
 		// merge session messages into current requests array if not empty
-		if (is_array($session_messages) AND ! empty($session_messages))
+		if ( ! empty($session_messages))
 			$messages = array_merge_recursive($session_messages, $messages);
 
 		$output = '';

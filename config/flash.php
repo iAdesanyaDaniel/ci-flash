@@ -2,10 +2,23 @@
 
 /*
 | -------------------------------------------------------------------
-|  Flash Session Name
+|  Flash Storage Option
 | -------------------------------------------------------------------
 | 
-| The name of the flash session to store all messages into.
+| The storage option you wish to use to store the flash messages, either
+| 'session' or 'cookie' are permitted.
+|
+*/
+
+$config['flash']['storage_type'] = 'session';
+
+
+/*
+| -------------------------------------------------------------------
+|  Flash Session/Cookie Name
+| -------------------------------------------------------------------
+| 
+| The name of the flash session/cookie to store all messages into.
 |
 */
 
