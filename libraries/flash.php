@@ -44,7 +44,8 @@ class Flash {
 	 * @access private
 	 */
 	private $_config_whitelist = array(
-		'session_name', 'default_style', 'styles', 'split_default', 'merge_form_errors'
+		'session_name', 'default_style', 'styles', 'split_default', 
+		'merge_form_errors', 'form_error_message'
 	);
 
 	/**
@@ -86,6 +87,14 @@ class Flash {
 	 * @access public
 	 */
 	public $merge_form_errors = TRUE;
+
+	/**
+	 * Optionally display only a single form error message.
+	 *
+	 * @var string
+	 * @access public
+	 */
+	public $form_error_message = NULL;
 
 	/**
 	 * Constructer
@@ -139,6 +148,7 @@ class Flash {
 	 * will be stored in flashdata for the next one.
 	 *
 	 * @param mixed  $message     The message to be added
+	 * @param mixed  $data        Array or string to be used to format the message
 	 * @param string $type        The type of message being added
 	 * @param bool   $display_now Display the message on this request or the next
 	 *
@@ -191,24 +201,29 @@ class Flash {
 		if ($type === '' OR $type === 'form' OR ($this->merge_form_errors AND $type === 'error')) {
 			$this->_ci->load->library('form_validation');
 
-			// check that validation errors function exists and return errors in an array
-			// if not, leave array empty
-			$form_errors = array();
-
-			if (function_exists('validation_errors')) {
-				if ($errors = trim(validation_errors(' ', '|'))) {
+			// check to see if any form validation errors are present
+			if ($errors = trim(validation_errors(' ', '|'))) {
+				if ($this->form_error_message !== NULL) {
+					// create single item array with error message
+					$form_errors = array($this->form_error_message);
+				}
+				else {
+					// create array from validation errors string
 					$form_errors = explode('|', substr($errors, 0, -1));
 				}
-			}
 
-			foreach ($form_errors as $error) {
-				// add form message to error messages if merge specified and type valid
+				// merge into errors array if configured to
 				if ($this->merge_form_errors AND ($type === '' OR $type === 'error')) {
-					$messages['error'][] = $error;
+					if ( ! isset($messages['error']))
+						$messages['error'] = array();
+
+					$messages['error'] = array_merge($messages['error'], $form_errors);
 				}
-				// if not add error to forms own messages
 				else {
-					$messages['form'][] = $error;
+					if ( ! isset($messages['form']))
+						$messages['form'] = array();
+
+					$messages['form'] = array_merge($messages['form'], $form_errors);
 				}
 			}
 		}
