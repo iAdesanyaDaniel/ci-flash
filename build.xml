@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="CI-Flash" description="A flash message implementation, with multi-types" default="sniff">
+<project name="ci-flash" description="A flash message implementation, with multi-types" default="sniff">
 
 	<!-- ============================================  -->
 	<!-- Target: clean                                 -->
