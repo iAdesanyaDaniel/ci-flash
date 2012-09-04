@@ -158,7 +158,7 @@ class Flash {
 	 */
 	private function _add_message($message, $data = '', $type = 'default', $display_now = FALSE)
 	{
-		// all messages must scalar types (int, float, string or boolean)
+		// all messages must be scalar types (int, float, string or boolean)
 		// and the type must be a string, if either invalid an exception is raised
 		if ( ! is_scalar($message) OR ! is_string($type))
 			throw new Exception('Invalid message type/value entered.');
@@ -179,20 +179,19 @@ class Flash {
 	}
 
 	/**
-	 * Display Messages
-	 * 
-	 * Returns the HTML to display the specified type in either
-	 * split or joined message format. If no type specified all
-	 * types are returned. If 'form' is passed in as the type the form
-	 * validation class is used to retrieve the errors.
+	 * Get Messages
 	 *
-	 * @param string  $type  The message type to display
-	 * @param boolean $split Display messages split or joined
+	 * Returns the specifed type of messages as an array, else returns all available
+	 * messages. Optionally allows you to return single types of messages as an associative
+	 * array, which is internally used for displaying.
 	 * 
-	 * @return string the message HTML
+	 * @param  string  $type            the message type to return, or empty for all
+	 * @param  boolean $single_as_assoc return single types as an associative array
+	 * 
+	 * @return array The specifed types messages or empty array
 	 * @access public
 	 */
-	public function display($type = '', $split = NULL)
+	public function get($type = '', $single_as_assoc = FALSE)
 	{
 		$session_messages = $this->_ci->session->flashdata($this->session_name);
 		$messages         = $this->_messages;
@@ -228,21 +227,55 @@ class Flash {
 			}
 		}
 
+		// set the messages to a specific type if option present, else set to empty array
+		if ($type !== '') {
+			if (isset($session_messages[$type])) {
+				// create associative array with type if desired
+				$session_messages = ($single_as_assoc) ?
+					array($type => $session_messages[$type]) : $session_messages[$type];
+			}
+			else {
+				$session_messages = array();
+			}
+
+			if (isset($messages[$type])) {
+				// create associative array with type if desired
+				$messages = ($single_as_assoc) ?
+					array($type => $messages[$type]) : $messages[$type];
+			}
+			else {
+				$messages = array();
+			}
+		}
+
+		// merge session messages into current requests array
+		$messages = array_merge_recursive($session_messages, $messages);
+
+		return $messages;
+	}
+
+	/**
+	 * Display Messages
+	 * 
+	 * Returns the HTML to display the specified type in either split or joined 
+	 * message format. If no type specified all types are returned. 
+	 * If 'form' is passed in as the type the form validation class is used 
+	 * to retrieve the errors.
+	 *
+	 * @param string  $type  The message type to display
+	 * @param boolean $split Display messages split or joined
+	 * 
+	 * @return string The message HTML
+	 * @access public
+	 */
+	public function display($type = '', $split = NULL)
+	{
 		// set split option to default if no option passed in
 		if ($split === NULL)
 			$split = $this->split_default;
 
-		// set the messages to a specific type if option present, else set to empty array
-		if ($type !== '') {
-			$session_messages = (isset($session_messages[$type])) ? 
-				array($type => $session_messages[$type]) : array();
-			$messages = (isset($messages[$type])) ? 
-				array($type => $messages[$type]) : array();
-		}
-
-		// merge session messages into current requests array if not empty
-		if (is_array($session_messages) AND ! empty($session_messages))
-			$messages = array_merge_recursive($session_messages, $messages);
+		// returns an associative array with specified messages in
+		$messages = $this->get($type, TRUE);
 
 		$output = '';
 
@@ -280,7 +313,7 @@ class Flash {
 	/**
 	 * Call (Magic Method)
 	 *
-	 * Used to allow user to call the class with a message type as the function name.
+	 * Used to allow the user to call the class with a message type as the function name.
 	 * When called it internally invokes the private add message function.
 	 *
 	 * @param string $name      The message type name
@@ -305,6 +338,22 @@ class Flash {
 		else {
 			throw new BadMethodCallException();
 		}
+	}
+
+	/**
+	 * Get (Magic Method)
+	 *
+	 * Used to allow the user to call the class with a message type as the property name.
+	 * When called it internally invokes the get function.
+	 * 
+	 * @param string $name The type of messages to return
+	 * 
+	 * @return array The specifed types messages or empty array
+	 * @access public
+	 */
+	public function __get($name)
+	{
+		return $this->get($name);
 	}
 
 }
