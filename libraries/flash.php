@@ -185,8 +185,8 @@ class Flash {
 	 * messages. Optionally allows you to return single types of messages as an associative
 	 * array, which is internally used for displaying.
 	 * 
-	 * @param  string  $type            the message type to return, or empty for all
-	 * @param  boolean $single_as_assoc return single types as an associative array
+	 * @param string  $type            the message type to return, or empty for all
+	 * @param boolean $single_as_assoc return single types as an associative array
 	 * 
 	 * @return array The specifed types messages or empty array
 	 * @access public
