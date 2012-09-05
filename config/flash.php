@@ -64,5 +64,19 @@ $config['flash']['split_default'] = FALSE;
 $config['flash']['merge_form_errors'] = TRUE;
 
 
+/*
+| -------------------------------------------------------------------
+|  Display Single Form Error Message
+| -------------------------------------------------------------------
+| 
+| You can optionally choose to display only a single form error message,
+| useful when you are displaying field errors individually.
+| To enable, set the value to a string, else NULL.
+|
+*/
+
+$config['flash']['form_error_message'] = NULL;
+
+
 /* End of file flash.php */
 /* Location: ./sparks/flash/1.0.0/config/flash.php */
