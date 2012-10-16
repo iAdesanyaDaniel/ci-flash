@@ -71,6 +71,10 @@ Thease types of errors can be displayed either using the special message type _f
 Change Log
 ----------
 
+**v1.5.1**
+
+- Bug-fix to correct issue with message session not defaulting to an empty array when retrieving.
+
 **v1.5.0**
 
 - Altered how to add a message for this page request (`_now` after function name, instead of `TRUE` param).
