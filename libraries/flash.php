@@ -196,6 +196,11 @@ class Flash {
 		$session_messages = $this->_ci->session->flashdata($this->session_name);
 		$messages         = $this->_messages;
 
+		// sets the session message to an array if not already the case
+		if ( ! is_array($session_messages)) {
+			$session_messages = array();
+		}
+
 		// attempt to display form errors if no type or form/error types passed in
 		if ($type === '' OR $type === 'form' OR ($this->merge_form_errors AND $type === 'error')) {
 			$this->_ci->load->library('form_validation');
