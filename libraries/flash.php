@@ -133,7 +133,7 @@ class Flash {
 	 */
 	private function _initialize(array $config = array())
 	{
-		foreach ($config as $config_key => $config_value) {
+		foreach ($config['flash'] as $config_key => $config_value) {
 			if (in_array($config_key, $this->_config_whitelist)) {
 				$this->{$config_key} = $config_value;
 			}
